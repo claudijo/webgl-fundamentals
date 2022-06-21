@@ -1,0 +1,39 @@
+{
+  "name": "webgl-fundamentals",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "build": "wp --mode production",
+    "start": "wp --mode development",
+    "watch": "nodemon --watch \"./webpack.*\" --exec \"npm start\""
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    }
+  },
+  "author": "Claudijo Borovic <hello@claudijo.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.17.9",
+    "@babel/preset-env": "^7.16.11",
+    "add": "^2.0.6",
+    "autoprefixer": "^10.4.5",
+    "babel-loader": "^8.2.5",
+    "css-loader": "^6.7.1",
+    "css-minimizer-webpack-plugin": "^3.4.1",
+    "jest": "^28.0.2",
+    "mini-css-extract-plugin": "^2.6.0",
+    "mini-html-webpack-plugin": "^3.1.3",
+    "nodemon": "^2.0.15",
+    "npm": "^8.7.0",
+    "postcss-loader": "^6.2.1",
+    "style-loader": "^3.3.1",
+    "terser-webpack-plugin": "^5.3.1",
+    "webpack": "^5.72.0",
+    "webpack-merge": "^5.8.0",
+    "webpack-nano": "^1.1.1",
+    "webpack-plugin-serve": "^1.6.0"
+  }
+}
