@@ -59,7 +59,7 @@ export function createProgramInfo(gl, vsSource, fsSource) {
 export function createBufferInfoFromArrays(gl, arrays) {
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arrays.positions), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(arrays.position), gl.STATIC_DRAW);
 
   return {
     positionBuffer,

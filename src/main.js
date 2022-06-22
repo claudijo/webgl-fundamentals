@@ -22,7 +22,7 @@ const gl = canvas.getContext('webgl');
 const programInfo = createProgramInfo(gl, vsSource, fsSource);
 
 const arrays = {
-  positions: [-0.5, -0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, -0.5, 0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0],
+  position: [-1, -1, 0, 1, -1, 0, -1, 1, 0, -1, 1, 0, 1, -1, 0, 1, 1, 0],
 };
 const bufferInfo = createBufferInfoFromArrays(gl, arrays);
 
