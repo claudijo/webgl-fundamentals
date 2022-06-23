@@ -9,7 +9,7 @@ import {
 } from './libs/webgl';
 import vsSource from './shaders/shader.vert';
 import fsSource from './shaders/shader.frag';
-import { identity, perspective, scaling } from './libs/m4';
+import { identity, lookAt, perspective, scaling, translate, translation, xRotate, yRotate, zRotate } from './libs/m4';
 import { degToRad } from './libs/math';
 
 const SCENE_WIDTH = 640;
@@ -29,7 +29,15 @@ gl.enable(gl.CULL_FACE);
 const programInfo = createProgramInfo(gl, vsSource, fsSource);
 
 const arrays = {
-  position: [-0.5, -0.5, -2, 0.5, -0.5, -2, -0.5, 0.5, -2, -0.5, 0.5, -2, 0.5, -0.5, -2, 0.5, 0.5, -2],
+  position: [
+    -1, 0.2, 1,
+    1, 0, -1,
+    -1, 0, -1,
+
+    -1, 0.2, 1,
+    1, 0, 1,
+    1, 0, -1,
+  ],
 };
 
 const bufferInfo = createBufferInfoFromArrays(gl, arrays);
@@ -43,8 +51,13 @@ function render(time) {
   // Clear the canvas AND the depth buffer.
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+  const modelMatrix = translation(0, 0, -4);
+  xRotate(modelMatrix, degToRad(0), modelMatrix);
+
   const uniforms = {
-    u_worldViewProjection: perspective(degToRad(90), gl.canvas.clientWidth / gl.canvas.clientHeight,1, 100),
+    u_projection: perspective(degToRad(90), gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 100),
+    u_view: lookAt([0, -1, 0], [0, 0, -2], [0, 1, 0]),
+    u_model: modelMatrix,
   };
 
   gl.useProgram(programInfo.program);
