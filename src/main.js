@@ -9,7 +9,18 @@ import {
 } from './libs/webgl';
 import vsSource from './shaders/shader.vert';
 import fsSource from './shaders/shader.frag';
-import { identity, lookAt, perspective, scaling, translate, translation, xRotate, yRotate, zRotate } from './libs/m4';
+import {
+  identity, inverse,
+  lookAt, multiply,
+  normalize,
+  perspective,
+  scaling,
+  translate,
+  translation, transpose,
+  xRotate,
+  yRotate,
+  zRotate,
+} from './libs/m4';
 import { degToRad } from './libs/math';
 
 const SCENE_WIDTH = 640;
@@ -30,13 +41,22 @@ const programInfo = createProgramInfo(gl, vsSource, fsSource);
 
 const arrays = {
   position: [
-    -1, 0.2, 1,
+    -1, 0, 1,
     1, 0, -1,
     -1, 0, -1,
 
-    -1, 0.2, 1,
+    -1, 0, 1,
     1, 0, 1,
     1, 0, -1,
+  ],
+  normal: [
+    0, 1, 0,
+    0, 1, 0,
+    0, 1, 0,
+
+    0, 1, 0,
+    0, 1, 0,
+    0, 1, 0,
   ],
 };
 
@@ -51,13 +71,25 @@ function render(time) {
   // Clear the canvas AND the depth buffer.
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  const modelMatrix = translation(0, 0, -4);
-  xRotate(modelMatrix, degToRad(0), modelMatrix);
+  const projectionMatrix = perspective(degToRad(90), gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 100);
+
+  const cameraMatrix = lookAt([0, 1, 0], [0, 0, -2], [0, 1, 0]);
+  const viewMatrix = inverse(cameraMatrix);
+
+  const viewProjectionMatrix = multiply(projectionMatrix, viewMatrix);
+
+  const worldMatrix = translation(0, 0, -2);
+  xRotate(worldMatrix, degToRad(20), worldMatrix);
+
+  const worldViewProjectionMatrix = multiply(viewProjectionMatrix, worldMatrix);
+  const worldInverseMatrix = inverse(worldMatrix);
+  const worldInverseTransposeMatrix = transpose(worldInverseMatrix);
 
   const uniforms = {
-    u_projection: perspective(degToRad(90), gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 100),
-    u_view: lookAt([0, -1, 0], [0, 0, -2], [0, 1, 0]),
-    u_model: modelMatrix,
+    u_worldViewProjection: worldViewProjectionMatrix,
+    u_worldInverseTranspose: worldInverseTransposeMatrix,
+    u_reverseLightDirection: normalize([0, 1, 0]),
+    u_color: [0.42, 0.85, 0.91, 1],
   };
 
   gl.useProgram(programInfo.program);

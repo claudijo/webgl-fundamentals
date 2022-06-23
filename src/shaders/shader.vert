@@ -1,11 +1,16 @@
 // an attribute will receive data from a buffer
 attribute vec4 a_position;
-uniform mat4 u_view;
-uniform mat4 u_projection;
-uniform mat4 u_model;
+attribute vec3 a_normal;
+
+uniform mat4 u_worldViewProjection;
+uniform mat4 u_worldInverseTranspose;
+
+varying vec3 v_normal;
 
 // all shaders have a main function
 void main() {
-    mat4 mvpMatrix = u_projection * u_view * u_model;
-    gl_Position = mvpMatrix * a_position;
+    gl_Position = u_worldViewProjection * a_position;
+
+    // orient the normals and pass to the fragment shader
+    v_normal = mat3(u_worldInverseTranspose) * a_normal;
 }
