@@ -37,10 +37,7 @@ function render(time) {
   // Clear the canvas AND the depth buffer.
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  const uniforms = {
-    // time: time * 0.001,
-    u_resolution: [gl.canvas.width / 64, gl.canvas.height / 48],
-  };
+  const uniforms = {};
 
   gl.useProgram(programInfo.program);
   setBuffersAndAttributes(gl, programInfo, bufferInfo);
