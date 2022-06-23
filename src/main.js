@@ -32,7 +32,7 @@ function render(time) {
 
   const uniforms = {
     time: time * 0.001,
-    resolution: [gl.canvas.width, gl.canvas.height],
+    resolution: [gl.canvas.width / 64, gl.canvas.height / 48],
   };
 
   gl.useProgram(programInfo.program);
@@ -42,7 +42,7 @@ function render(time) {
   clear(gl);
   drawBufferInfo(gl, bufferInfo);
 
-  requestAnimationFrame(render);
+  // requestAnimationFrame(render);
 }
 
 requestAnimationFrame(render);

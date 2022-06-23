@@ -48,11 +48,19 @@ export function createProgramInfo(gl, vsSource, fsSource) {
   const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
   const program = createProgram(gl, vertexShader, fragmentShader);
 
-  const positionLoc = gl.getAttribLocation(program, 'a_position');
+  const aPositionLocation = gl.getAttribLocation(program, 'a_position');
+
+  const uResolutionLocation = gl.getUniformLocation(program, 'u_resolution');
 
   return {
     program,
-    positionLoc,
+    uniformSetters: {
+      resolution(resolution) {
+        gl.uniform2f(uResolutionLocation, ...resolution);
+      }
+    },
+    aPositionLocation,
+    uResolutionLocation,
   };
 }
 
@@ -69,12 +77,18 @@ export function createBufferInfoFromArrays(gl, arrays) {
 
 export function setBuffersAndAttributes(gl, programInfo, bufferInfo) {
   gl.bindBuffer(gl.ARRAY_BUFFER, bufferInfo.positionBuffer);
-  gl.vertexAttribPointer(programInfo.positionLoc, 3, gl.FLOAT, false, 0, 0);
-  gl.enableVertexAttribArray(programInfo.positionLoc);
+  gl.vertexAttribPointer(programInfo.aPositionLocation, 3, gl.FLOAT, false, 0, 0);
+  gl.enableVertexAttribArray(programInfo.aPositionLocation);
 }
 
 export function setUniforms(programInfo, uniforms) {
-  // TODO
+  const setters =  programInfo.uniformSetters;
+  for (const name in uniforms) {
+    const setter = setters[name];
+    if (setter) {
+      setter(uniforms[name]);
+    }
+  }
 }
 
 export function drawBufferInfo(gl, bufferInfo) {
