@@ -22,6 +22,7 @@ import {
   zRotate,
 } from './libs/m4';
 import { degToRad } from './libs/math';
+import { make2DMesh } from './models/mesh';
 
 const SCENE_WIDTH = 640;
 const SCENE_HEIGHT = 480;
@@ -39,26 +40,7 @@ gl.enable(gl.CULL_FACE);
 
 const programInfo = createProgramInfo(gl, vsSource, fsSource);
 
-const arrays = {
-  position: [
-    -1, 0, 1,
-    1, 0, -1,
-    -1, 0, -1,
-
-    -1, 0, 1,
-    1, 0, 1,
-    1, 0, -1,
-  ],
-  normal: [
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-  ],
-};
+const arrays = make2DMesh([-20, 0, -20], [20, 0, 20], 80, 80);
 
 const bufferInfo = createBufferInfoFromArrays(gl, arrays);
 
@@ -73,13 +55,13 @@ function render(time) {
 
   const projectionMatrix = perspective(degToRad(90), gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 100);
 
-  const cameraMatrix = lookAt([0, 1, 0], [0, 0, -2], [0, 1, 0]);
+  const cameraMatrix = lookAt([0, 2.5, 0], [0, 0, -2], [0, 1, 0]);
   const viewMatrix = inverse(cameraMatrix);
 
   const viewProjectionMatrix = multiply(projectionMatrix, viewMatrix);
 
-  const worldMatrix = translation(0, 0, -2);
-  xRotate(worldMatrix, degToRad(20), worldMatrix);
+  const worldMatrix = translation(0, 0, -4);
+  yRotate(worldMatrix, degToRad(45), worldMatrix);
 
   const worldViewProjectionMatrix = multiply(viewProjectionMatrix, worldMatrix);
   const worldInverseMatrix = inverse(worldMatrix);
