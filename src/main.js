@@ -23,6 +23,7 @@ import {
 } from './libs/m4';
 import { degToRad } from './libs/math';
 import { make2DMesh } from './models/mesh';
+import { applyHightMap, calculateNormals } from './utils/vertex';
 
 const SCENE_WIDTH = 640;
 const SCENE_HEIGHT = 480;
@@ -40,11 +41,11 @@ gl.enable(gl.CULL_FACE);
 
 const programInfo = createProgramInfo(gl, vsSource, fsSource);
 
-const arrays = make2DMesh([-20, 0, -20], [20, 0, 20], 80, 80);
-
-const bufferInfo = createBufferInfoFromArrays(gl, arrays);
+const position = make2DMesh([-20, 0, -20], [20, 0, 20], 200, 200);
+const normal = new Array(position.length);
 
 function render(time) {
+  time = time * 0.001;
   resizeCanvasToDisplaySize(gl.canvas);
 
   // Tell WebGL how to convert from clip space to pixels
@@ -53,9 +54,18 @@ function render(time) {
   // Clear the canvas AND the depth buffer.
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+  // Attributes
+  applyHightMap(position, time, position);
+  calculateNormals(position, normal);
+
+  const bufferInfo = createBufferInfoFromArrays(gl, {
+    position,
+    normal,
+  });
+
   const projectionMatrix = perspective(degToRad(90), gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 100);
 
-  const cameraMatrix = lookAt([0, 2.5, 0], [0, 0, -2], [0, 1, 0]);
+  const cameraMatrix = lookAt([0, 2, 0], [0, 0, -2], [0, 1, 0]);
   const viewMatrix = inverse(cameraMatrix);
 
   const viewProjectionMatrix = multiply(projectionMatrix, viewMatrix);
@@ -70,7 +80,7 @@ function render(time) {
   const uniforms = {
     u_worldViewProjection: worldViewProjectionMatrix,
     u_worldInverseTranspose: worldInverseTransposeMatrix,
-    u_reverseLightDirection: normalize([0, 1, 0]),
+    u_reverseLightDirection: normalize([-1, 20, 0]),
     u_color: [0.42, 0.85, 0.91, 1],
   };
 
@@ -80,7 +90,7 @@ function render(time) {
 
   drawBufferInfo(gl, bufferInfo);
 
-  // requestAnimationFrame(render);
+  requestAnimationFrame(render);
 }
 
 requestAnimationFrame(render);

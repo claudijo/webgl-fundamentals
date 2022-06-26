@@ -14,7 +14,6 @@ const triangleNormal = triangle => {
 // https://www.cs.uregina.ca/Links/class-info/315/WebGL/Lab4/
 export function make2DMesh(xzMin, xzMax, xDivs, zDivs) {
   const position = [];
-  const normal = [];
   const dim = subtractVectors(xzMax, xzMin);
   const dx = dim[0] / xDivs;
   const dz = dim[2] / zDivs;
@@ -31,19 +30,10 @@ export function make2DMesh(xzMin, xzMax, xDivs, zDivs) {
       //   |        \
       //   |__________\
       // x,z+dz      x+dx,z+dz
-      const triangle1 = [
-        heightMap(x, 0, z),
-        heightMap(x, 0, z + dz),
-        heightMap(x + dx, 0, z + dz),
-      ];
-      position.push(...triangle1.flat());
-
-      const normal1 = triangleNormal(triangle1);
-
-      normal.push(
-        ...normal1,
-        ...normal1,
-        ...normal1,
+      position.push(
+        x, 0, z,
+        x, 0, z + dz,
+        x + dx, 0, z + dz
       );
 
       //Triangle 2
@@ -55,26 +45,13 @@ export function make2DMesh(xzMin, xzMax, xDivs, zDivs) {
       //            \  |
       //              \|
       //           x+dx,z+dz
-      const triangle2 = [
-        heightMap(x, 0, z),
-        heightMap(x + dx, 0, z + dz),
-        heightMap(x + dx, 0, z),
-      ];
-
-      position.push(...triangle2.flat());
-
-      const normal2 = triangleNormal(triangle2);
-
-      normal.push(
-        ...normal2,
-        ...normal2,
-        ...normal2,
+      position.push(
+        x, 0, z,
+        x + dx, 0, z + dz,
+        x + dx, 0, z
       );
     }
   }
 
-  return {
-    position,
-    normal,
-  };
+  return position;
 }
