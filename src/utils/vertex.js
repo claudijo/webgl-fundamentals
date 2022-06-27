@@ -6,7 +6,8 @@ export function wave(x, z, time) {
   const zSpeed = 1.5;
   const zFrequency = 0.3;
 
-  return Math.sin(x * xFrequency + time * xSpeed) * xHeight + Math.sin(z * zFrequency + time * zSpeed) * zHeight;
+  return Math.sin(x * xFrequency + time * xSpeed) * xHeight
+    + Math.sin(z * zFrequency + time * zSpeed) * zHeight;
 }
 
 export function applyWaves(source, dest, time) {
