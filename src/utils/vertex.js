@@ -1,30 +1,36 @@
-import { random } from '../libs/math';
+export function wave(x,z, time) {
+  const xHeight = 0.2;
+  const xSpeed = 1.5;
+  const xFrequency = 0.5;
+  const zHeight = 0.25
+  const zSpeed = 1.5;
+  const zFrequency = 0.3;
 
-export function applyHight(vertices, time, dest) {
-  for (let i = 0; i < vertices.length; i += 3) {
-    const x = vertices[i];
-    const z = vertices[i + 2];
-    dest[i + 1] = Math.sin(x * 0.5 + time * 1.5) / 5 + Math.sin(z * 0.3 + time * 1.5) / 4;
-    // dest[i + 1] = Math.sin(x * 1.5 + time * 1.5) / 3 + Math.sin(z + time * 1.5) / 2;
+  return Math.sin(x * xFrequency + time * xSpeed) * xHeight + Math.sin(z * zFrequency + time * zSpeed) * zHeight;
+}
+
+export function applyWaves(source, dest, time) {
+  for (let i = 0; i < source.length; i += 3) {
+    dest[i + 1] = wave(source[i], source[i + 2], time);
   }
 }
 
-export function calculateNormals(array, dest) {
-  for (let i = 0; i < array.length; i += 9) {
+export function calculateNormals(source, dest) {
+  for (let i = 0; i < source.length; i += 9) {
     // First vertex
-    const ax = array[i];
-    const ay = array[i + 1];
-    const az = array[i + 2];
+    const ax = source[i];
+    const ay = source[i + 1];
+    const az = source[i + 2];
 
     // Second vertex
-    const bx = array[i + 3];
-    const by = array[i + 4];
-    const bz = array[i + 5];
+    const bx = source[i + 3];
+    const by = source[i + 4];
+    const bz = source[i + 5];
 
     // Third Vertex
-    const cx = array[i + 6];
-    const cy = array[i + 7];
-    const cz = array[i + 8];
+    const cx = source[i + 6];
+    const cy = source[i + 7];
+    const cz = source[i + 8];
 
     // Subtract second and first vectors
     const vx = bx - ax;

@@ -18,7 +18,7 @@ import {
 } from './libs/m4';
 import { degToRad } from './libs/math';
 import { make2DMesh } from './models/mesh';
-import { applyHight, calculateNormals } from './utils/vertex';
+import { applyWaves, calculateNormals } from './utils/vertex';
 import '../styles/main.css';
 
 const SCENE_WIDTH = 640;
@@ -51,7 +51,7 @@ function render(time) {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   // Attributes
-  applyHight(position, time, position);
+  applyWaves(position, position, time);
   calculateNormals(position, normal);
 
   const bufferInfo = createBufferInfoFromArrays(gl, {
