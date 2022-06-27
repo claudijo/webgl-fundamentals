@@ -18,7 +18,7 @@ import {
 } from './libs/m4';
 import { degToRad } from './libs/math';
 import { make2DMesh } from './models/mesh';
-import { applyHeightMap, calculateNormals } from './utils/vertex';
+import { applyHight, calculateNormals } from './utils/vertex';
 import '../styles/main.css';
 
 const SCENE_WIDTH = 640;
@@ -51,7 +51,7 @@ function render(time) {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   // Attributes
-  applyHeightMap(position, time, position);
+  applyHight(position, time, position);
   calculateNormals(position, normal);
 
   const bufferInfo = createBufferInfoFromArrays(gl, {

@@ -1,6 +1,6 @@
 import { random } from '../libs/math';
 
-export function applyHeightMap(vertices, time, dest) {
+export function applyHight(vertices, time, dest) {
   for (let i = 0; i < vertices.length; i += 3) {
     const x = vertices[i];
     const z = vertices[i + 2];
