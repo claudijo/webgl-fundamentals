@@ -22,4 +22,7 @@ void main() {
     // Lets multiply just the color portion (not the alpha)
     // by the light
     gl_FragColor.rgb *= light;
+
+    // Add some ambient light
+    gl_FragColor.rgb += 0.2;
 }
