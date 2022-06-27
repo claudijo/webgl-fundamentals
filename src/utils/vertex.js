@@ -1,6 +1,11 @@
-export function applyHightMap(vertices, time, dest) {
+import { random } from '../libs/math';
+
+export function applyHeightMap(vertices, time, dest) {
   for (let i = 0; i < vertices.length; i += 3) {
-    dest[i + 1] = Math.sin(vertices[i] * 1.5 + time * 1.5) / 3 + Math.sin(vertices[i + 2] + time * 1.5) / 2;
+    const x = vertices[i];
+    const z = vertices[i + 2];
+    dest[i + 1] = Math.sin(x * 0.5 + time * 1.5) / 5 + Math.sin(z * 0.3 + time * 1.5) / 4;
+    // dest[i + 1] = Math.sin(x * 1.5 + time * 1.5) / 3 + Math.sin(z + time * 1.5) / 2;
   }
 }
 

@@ -1,5 +1,4 @@
 import { createElement } from './libs/dom';
-import { triangle } from './models/triangle';
 import {
   createBufferInfoFromArrays,
   createProgramInfo,
@@ -10,20 +9,17 @@ import {
 import vsSource from './shaders/shader.vert';
 import fsSource from './shaders/shader.frag';
 import {
-  identity, inverse,
+  inverse,
   lookAt, multiply,
   normalize,
   perspective,
-  scaling,
-  translate,
   translation, transpose,
-  xRotate,
   yRotate,
-  zRotate,
 } from './libs/m4';
 import { degToRad } from './libs/math';
 import { make2DMesh } from './models/mesh';
-import { applyHightMap, calculateNormals } from './utils/vertex';
+import { applyHeightMap, calculateNormals } from './utils/vertex';
+import '../styles/main.css';
 
 const SCENE_WIDTH = 640;
 const SCENE_HEIGHT = 480;
@@ -41,7 +37,7 @@ gl.enable(gl.CULL_FACE);
 
 const programInfo = createProgramInfo(gl, vsSource, fsSource);
 
-const position = make2DMesh([-20, 0, -20], [20, 0, 20], 200, 200);
+const position = make2DMesh([-20, 0, -20], [20, 0, 20], 30, 30);
 const normal = new Array(position.length);
 
 function render(time) {
@@ -55,7 +51,7 @@ function render(time) {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   // Attributes
-  applyHightMap(position, time, position);
+  applyHeightMap(position, time, position);
   calculateNormals(position, normal);
 
   const bufferInfo = createBufferInfoFromArrays(gl, {
@@ -63,9 +59,8 @@ function render(time) {
     normal,
   });
 
-  const projectionMatrix = perspective(degToRad(90), gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 100);
-
-  const cameraMatrix = lookAt([0, 2, 0], [0, 0, -2], [0, 1, 0]);
+  const projectionMatrix = perspective(degToRad(60), gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 100);
+  const cameraMatrix = lookAt([0, 6, 30], [0, 0, 0], [0, 1, 0]);
   const viewMatrix = inverse(cameraMatrix);
 
   const viewProjectionMatrix = multiply(projectionMatrix, viewMatrix);
@@ -80,7 +75,7 @@ function render(time) {
   const uniforms = {
     u_worldViewProjection: worldViewProjectionMatrix,
     u_worldInverseTranspose: worldInverseTransposeMatrix,
-    u_reverseLightDirection: normalize([-1, 20, 0]),
+    u_reverseLightDirection: normalize([-1, 1, 0]),
     u_color: [0.42, 0.85, 0.91, 1],
   };
 
