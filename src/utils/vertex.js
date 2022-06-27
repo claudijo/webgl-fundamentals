@@ -1,4 +1,4 @@
-export function wave(x,z, time) {
+export function wave(x, z, time) {
   const xHeight = 0.2;
   const xSpeed = 1.5;
   const xFrequency = 0.5;
