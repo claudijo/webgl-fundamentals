@@ -9,20 +9,20 @@ import {
 import vsSource from './shaders/shader.vert';
 import fsSource from './shaders/shader.frag';
 import {
+  axisRotate,
   identity,
   inverse,
   lookAt, multiply,
   normalize,
   perspective,
   translation, transpose, xRotate,
-  yRotate,
+  yRotate, zRotate,
 } from './libs/m4';
 import { degToRad } from './libs/math';
-import { make2DMesh } from './models/mesh';
 import { applyWaves, calculateNormals, waveHeight } from './utils/vertex';
 import '../styles/main.css';
 import { createOceanBufferInfo } from './models/ocean';
-import { createSmallShipBufferInfo } from './models/small-ship';
+import { createSmallShipBufferInfo, getWaterLineTriangle } from './models/small-ship';
 
 const SCENE_WIDTH = 640;
 const SCENE_HEIGHT = 480;
@@ -40,7 +40,7 @@ gl.enable(gl.CULL_FACE);
 
 const programInfo = createProgramInfo(gl, vsSource, fsSource);
 
-const smallShipBuffer = createSmallShipBufferInfo(gl, { width: 4, height: 2, depth: 2});
+const smallShipBuffer = createSmallShipBufferInfo(gl);
 
 function render(time) {
   time = time * 0.001;
@@ -78,9 +78,25 @@ function render(time) {
     u_model: identity(),
   };
 
+  const waterLineTriangle = getWaterLineTriangle(0,0);
+  applyWaves(waterLineTriangle, waterLineTriangle, time);
+
+  const waterLineTriangleNormals = new Array(waterLineTriangle.length);
+  calculateNormals(waterLineTriangle, waterLineTriangleNormals);
+  normalize(waterLineTriangleNormals, waterLineTriangleNormals);
+  const smallShipRotation = waterLineTriangleNormals.slice(0, 3);
+
+  const xRot = Math.atan2(smallShipRotation[2], smallShipRotation[1]);
+  const zRot = Math.atan2(smallShipRotation[0], smallShipRotation[1]);
+
+  const modelMatrix = translation(0,waveHeight(0,0, time),0);
+  xRotate(modelMatrix, xRot, modelMatrix);
+  zRotate(modelMatrix, -zRot, modelMatrix);
+
   const smallShipUniforms = {
     u_color: [1, 0, 0, 1],
-    u_model: translation(0,waveHeight(0,0, time),0),
+    u_model: modelMatrix,
+
   };
 
   gl.useProgram(programInfo.program);

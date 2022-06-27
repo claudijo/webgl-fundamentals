@@ -1,5 +1,19 @@
 import { cross, subtractVectors } from '../libs/m4';
 
+export function triangleAtPosition(x, z, xzMin, xzMax, xDivs, zDivs) {
+  const triangle = [];
+  const dim = subtractVectors(xzMax, xzMin);
+  const dx = dim[0] / xDivs;
+  const dz = dim[2] / zDivs;
+
+
+  return [
+    x, 0, z,
+    x, 0, z + dz,
+    x + dx, 0, z + dz
+  ];
+}
+
 // https://www.cs.uregina.ca/Links/class-info/315/WebGL/Lab4/
 export function make2DMesh(xzMin, xzMax, xDivs, zDivs) {
   const position = [];

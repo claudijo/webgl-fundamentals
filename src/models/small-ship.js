@@ -9,8 +9,20 @@ const CUBE_FACE_INDICES = [
   [2, 3, 1, 0], // back
 ];
 
+const width = 4;
+const height = 2;
+const depth = 2;
+
+export function getWaterLineTriangle (x, z) {
+  return [
+    x - width / 2, 0, z - depth / 2,
+    x - width / 2, 0, z + depth / 2,
+    x + width / 2, 0, z,
+  ]
+}
+
 // https://webglfundamentals.org/webgl/resources/primitives.js
-export function createSmallShipBufferInfo(gl, { width = 1, height = 1, depth = 1 } = {}) {
+export function createSmallShipBufferInfo(gl) {
   const w = width / 2;
   const h = height / 2;
   const d = depth / 2;

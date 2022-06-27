@@ -1,8 +1,8 @@
 export function waveHeight(x, z, time) {
-  const xHeight = 0.2;
+  const xHeight = 0.3;
   const xSpeed = 3;
   const xFrequency = 0.5;
-  const zHeight = 0.25
+  const zHeight = 0.4
   const zSpeed = 3;
   const zFrequency = 0.3;
 
