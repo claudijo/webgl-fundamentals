@@ -1,9 +1,9 @@
-export function wave(x, z, time) {
+export function waveHeight(x, z, time) {
   const xHeight = 0.2;
-  const xSpeed = 1.5;
+  const xSpeed = 3;
   const xFrequency = 0.5;
   const zHeight = 0.25
-  const zSpeed = 1.5;
+  const zSpeed = 3;
   const zFrequency = 0.3;
 
   return Math.sin(x * xFrequency + time * xSpeed) * xHeight
@@ -12,7 +12,7 @@ export function wave(x, z, time) {
 
 export function applyWaves(source, dest, time) {
   for (let i = 0; i < source.length; i += 3) {
-    dest[i + 1] = wave(source[i], source[i + 2], time);
+    dest[i + 1] = waveHeight(source[i], source[i + 2], time);
   }
 }
 

@@ -1,16 +1,5 @@
 import { cross, subtractVectors } from '../libs/m4';
 
-const heightMap = (x, _, z) => {
-  const y = Math.sin(x) / (4) + Math.sin(z) / (3);
-  return [x, y, z];
-};
-
-const triangleNormal = triangle => {
-  const d1 = subtractVectors(triangle[1], triangle[0]);
-  const d2 = subtractVectors(triangle[2], triangle[0]);
-  return cross(d1, d2);
-};
-
 // https://www.cs.uregina.ca/Links/class-info/315/WebGL/Lab4/
 export function make2DMesh(xzMin, xzMax, xDivs, zDivs) {
   const position = [];

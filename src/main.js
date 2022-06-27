@@ -9,17 +9,20 @@ import {
 import vsSource from './shaders/shader.vert';
 import fsSource from './shaders/shader.frag';
 import {
+  identity,
   inverse,
   lookAt, multiply,
   normalize,
   perspective,
-  translation, transpose,
+  translation, transpose, xRotate,
   yRotate,
 } from './libs/m4';
 import { degToRad } from './libs/math';
 import { make2DMesh } from './models/mesh';
-import { applyWaves, calculateNormals } from './utils/vertex';
+import { applyWaves, calculateNormals, waveHeight } from './utils/vertex';
 import '../styles/main.css';
+import { createOceanBufferInfo } from './models/ocean';
+import { createSmallShipBufferInfo } from './models/small-ship';
 
 const SCENE_WIDTH = 640;
 const SCENE_HEIGHT = 480;
@@ -37,8 +40,7 @@ gl.enable(gl.CULL_FACE);
 
 const programInfo = createProgramInfo(gl, vsSource, fsSource);
 
-const position = make2DMesh([-20, 0, -20], [20, 0, 20], 30, 30);
-const normal = new Array(position.length);
+const smallShipBuffer = createSmallShipBufferInfo(gl, { width: 4, height: 2, depth: 2});
 
 function render(time) {
   time = time * 0.001;
@@ -50,16 +52,9 @@ function render(time) {
   // Clear the canvas AND the depth buffer.
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  // Attributes
-  applyWaves(position, position, time);
-  calculateNormals(position, normal);
+  const oceanBufferInfo = createOceanBufferInfo(gl, time);
 
-  const bufferInfo = createBufferInfoFromArrays(gl, {
-    position,
-    normal,
-  });
-
-  const projectionMatrix = perspective(degToRad(60), gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 100);
+  const projectionMatrix = perspective(degToRad(40), gl.canvas.clientWidth / gl.canvas.clientHeight, 0.1, 100);
   const cameraMatrix = lookAt([0, 6, 30], [0, 0, 0], [0, 1, 0]);
   const viewMatrix = inverse(cameraMatrix);
 
@@ -72,18 +67,33 @@ function render(time) {
   const worldInverseMatrix = inverse(worldMatrix);
   const worldInverseTransposeMatrix = transpose(worldInverseMatrix);
 
-  const uniforms = {
+  const globalUniforms = {
     u_worldViewProjection: worldViewProjectionMatrix,
     u_worldInverseTranspose: worldInverseTransposeMatrix,
     u_reverseLightDirection: normalize([-1, 1, 0]),
+  };
+
+  const oceanUniforms = {
     u_color: [0.42, 0.85, 0.91, 1],
+    u_model: identity(),
+  };
+
+  const smallShipUniforms = {
+    u_color: [1, 0, 0, 1],
+    u_model: translation(0,waveHeight(0,0, time),0),
   };
 
   gl.useProgram(programInfo.program);
-  setBuffersAndAttributes(gl, programInfo, bufferInfo);
-  setUniforms(programInfo, uniforms);
+  setUniforms(programInfo, globalUniforms);
 
-  drawBufferInfo(gl, bufferInfo);
+  setUniforms(programInfo, oceanUniforms);
+  setBuffersAndAttributes(gl, programInfo, oceanBufferInfo);
+  drawBufferInfo(gl, oceanBufferInfo);
+
+  setUniforms(programInfo, smallShipUniforms);
+  setBuffersAndAttributes(gl, programInfo, smallShipBuffer);
+  drawBufferInfo(gl, smallShipBuffer);
+
 
   requestAnimationFrame(render);
 }
