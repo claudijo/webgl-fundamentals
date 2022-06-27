@@ -9,49 +9,48 @@ export function applyHeightMap(vertices, time, dest) {
   }
 }
 
-export function calculateNormals(vertices, dest) {
-  for (let i = 0; i < vertices.length; i += 9) {
-    // X coords
-    const a0 = vertices[i];
-    const a1 = vertices[i + 1];
-    const a2 = vertices[i + 2];
+export function calculateNormals(array, dest) {
+  for (let i = 0; i < array.length; i += 9) {
+    // First vertex
+    const ax = array[i];
+    const ay = array[i + 1];
+    const az = array[i + 2];
 
-    // y coords
-    const a3 = vertices[i + 3];
-    const a4 = vertices[i + 4];
-    const a5 = vertices[i + 5];
+    // Second vertex
+    const bx = array[i + 3];
+    const by = array[i + 4];
+    const bz = array[i + 5];
 
-    // z coords
-    const a6 = vertices[i + 6];
-    const a7 = vertices[i + 7];
-    const a8 = vertices[i + 8];
+    // Third Vertex
+    const cx = array[i + 6];
+    const cy = array[i + 7];
+    const cz = array[i + 8];
 
-    // a
-    const d0 = a3 - a0;
-    const d1 = a4 - a1;
-    const d2 = a5 - a2;
+    // Subtract second and first vectors
+    const vx = bx - ax;
+    const vy = by - ay;
+    const vz = bz - az;
 
-    // b
-    const d3 = a6 - a0;
-    const d4 = a7 - a1;
-    const d5 = a8 - a2;
+    // Subtract third and first vectors
+    const wx = cx - ax;
+    const wy = cy - ay;
+    const wz = cz - az;
 
-    // normals
-    const n0 = d1 * d5 - d2 * d4;
-    const n1 = d2 * d3 - d0 * d5;
-    const n2 = d0 * d4 - d1 * d3;
+    // Calculate normals with cross product
+    const nx = vy * wz - vz * wy;
+    const ny = vz * wx - vx * wz;
+    const nz = vx * wy - vy * wx;
 
+    dest[i] = nx;
+    dest[i + 1] = ny;
+    dest[i + 2] = nz;
 
-    dest[i] = n0;
-    dest[i + 1] = n1;
-    dest[i + 2] = n2;
+    dest[i + 3] = nx;
+    dest[i + 4] = ny;
+    dest[i + 5] = nz;
 
-    dest[i + 3] = n0;
-    dest[i + 4] = n1;
-    dest[i + 5] = n2;
-
-    dest[i + 6] = n0;
-    dest[i + 7] = n1;
-    dest[i + 8] = n2;
+    dest[i + 6] = nx;
+    dest[i + 7] = ny;
+    dest[i + 8] = nz;
   }
 }
